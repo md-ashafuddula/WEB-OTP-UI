@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking Transaction Authorization</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        .otp-form {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+        .otp-input {
+            width: 40px;
+            height: 40px;
+            text-align: center;
+            font-size: 24px;
+            margin: 0 5px;
+        }
+        .otp-input:focus {
+            border-color: #007bff;
+        }
+        .expired {
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <div class="otp-form">
+        <!-- First Block -->
+        <div class="d-flex justify-content-between mb-4">
+            <div>
+                <img src="mbl_logo.jpg" alt="MBL Logo" style="height: 40px;">
+                <span>MBL</span>
+            </div>
+            <div>
+                <span>Visa</span>
+            </div>
+        </div>
+
+        <!-- Second Block -->
+        <div class="mb-4">
+            <div class="font-weight-bold">Cardholder Authentication</div>
+            <div class="font-weight-bold" style="font-size: 20px;">200 BDT</div>
+        </div>
+
+        <!-- Third Block -->
+        <div class="mb-4">
+            <div class="d-flex justify-content-between">
+                <span>Merchant Name</span>
+                <span>Grameenphone.com</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Date-Time</span>
+                <span id="date-time"></span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Card Number</span>
+                <span>432423********9801</span>
+            </div>
+        </div>
+
+        <!-- Fourth Block -->
+        <div class="mb-4">
+            <div class="font-weight-bold">
+                Please enter a dynamic password to confirm your identity. Password has been sent to your phone: '+8801*****76'
+            </div>
+            <div class="text-center mt-3">
+                <span>Enter dynamic password:</span>
+                <div>
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp1')" id="otp0">
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp2')" id="otp1">
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp3')" id="otp2">
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp4')" id="otp3">
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, 'otp5')" id="otp4">
+                    <input type="text" class="otp-input" maxlength="1" oninput="moveToNext(this, null)" id="otp5">
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <span>Dynamic password will expire in <span id="timer">3:00</span></span>
+            </div>
+        </div>
+
+        <!-- Submit Button -->
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+    </div>
+
+    <script>
+        function moveToNext(current, nextFieldID) {
+            if (current.value.length === 1 && nextFieldID) {
+                document.getElementById(nextFieldID).focus();
+            }
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeString = now.toISOString().substring(0, 19).replace('T', ' ');
+            document.getElementById('date-time').textContent = dateTimeString;
+        }
+
+        function startTimer(duration, display) {
+            let timer = duration, minutes, seconds;
+            const interval = setInterval(function () {
+                minutes = parseInt(timer / 60, 10);
+                seconds = parseInt(timer % 60, 10);
+
+                minutes = minutes < 10 ? "0" + minutes : minutes;
+                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                display.textContent = minutes + ":" + seconds;
+
+                if (--timer < 0) {
+                    clearInterval(interval);
+                    display.textContent = "OTP has expired";
+                    display.classList.add("expired");
+                }
+            }, 1000);
+        }
+
+        window.onload = function () {
+            updateDateTime();
+            const threeMinutes = 60 * 3,
+                display = document.querySelector('#timer');
+            startTimer(threeMinutes, display);
+        };
+    </script>
+</body>
+</html>
